@@ -12,167 +12,119 @@
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code:wght@400;700&family=Oswald:wght@700&display=swap');
 
         :root {
-            --spider-red: #ff0037;
-            --spider-blue: #2e3192;
-            --glitch-cyan: #00ffff;
-            --glitch-magenta: #ff00ff;
-            --comic-yellow: #fff200;
-            --void-black: #050505;
-            --accent-glow: #ff0037;
+            --spider-red: #ff0037; --spider-blue: #2e3192; --glitch-cyan: #00ffff;
+            --glitch-magenta: #ff00ff; --comic-yellow: #fff200; --void-black: #050505;
+            --dim-bg: #050505;
         }
 
         body, html {
-            margin: 0; padding: 0;
-            background-color: #050505;
-            color: #fff;
-            font-family: 'Fira Code', monospace;
-            overflow-x: hidden;
-            cursor: crosshair;
-            transition: background-color 0.5s ease;
+            margin: 0; padding: 0; background-color: var(--dim-bg); color: #fff;
+            font-family: 'Fira Code', monospace; overflow-x: hidden; cursor: crosshair;
+            transition: background-color 1.2s ease;
         }
 
-        /* --- BACKGROUND & OVERLAYS --- */
-        #halftone-bg {
-            position: fixed; inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,0.05) 2px, transparent 2px);
-            background-size: 30px 30px;
-            z-index: -2;
-            pointer-events: none;
+        /* --- DIMENSION COUNTER HUD --- */
+        #dimension-hud {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(0,0,0,0.8); border: 2px solid var(--glitch-cyan);
+            padding: 10px 15px; font-family: 'Bangers'; color: var(--glitch-cyan);
+            letter-spacing: 2px; font-size: 1.2rem; display: none;
+            box-shadow: 0 0 10px var(--glitch-cyan);
         }
 
-        #glitch-overlay {
-            position: fixed; inset: 0;
-            background: white; z-index: 999999;
-            pointer-events: none; opacity: 0;
+        /* --- COBWEBS & FLICKER --- */
+        .cobweb {
+            position: fixed; width: 350px; height: 350px; z-index: 5;
+            pointer-events: none; opacity: 0.2; filter: drop-shadow(0 0 5px var(--glitch-cyan));
+            transition: opacity 0.3s, filter 0.3s;
         }
+        .web-top-left { top: -60px; left: -60px; }
+        .web-bottom-right { bottom: -60px; right: -60px; transform: rotate(180deg); }
+
+        .web-flicker {
+            animation: web-glow 0.8s ease-in-out forwards;
+        }
+
+        @keyframes web-glow {
+            0% { opacity: 0.2; filter: drop-shadow(0 0 5px var(--glitch-cyan)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 25px var(--glitch-cyan)) brightness(1.5); }
+            100% { opacity: 0.2; filter: drop-shadow(0 0 5px var(--glitch-cyan)); }
+        }
+
+        /* --- BACKGROUNDS & OVERLAYS --- */
+        #halftone-bg { position: fixed; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.05) 2px, transparent 2px); background-size: 30px 30px; z-index: -2; pointer-events: none; }
+        #master-glitch { position: fixed; inset: 0; background: white; z-index: 10000001; pointer-events: none; opacity: 0; display: flex; justify-content: center; align-items: center; }
 
         /* --- INTRO --- */
         #intro-container {
-            position: fixed; inset: 0; z-index: 10000000;
-            background: var(--void-black);
+            position: fixed; inset: 0; z-index: 10000000; background: var(--void-black);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: 0.8s cubic-bezier(0.8, 0, 0.2, 1);
         }
-
         #jump-button {
-            background: var(--spider-red);
-            color: white; border: 4px solid white;
-            padding: 30px 60px; font-family: 'Bangers';
-            font-size: 3rem; cursor: pointer;
-            box-shadow: 10px 10px 0 var(--spider-blue);
-            transition: 0.2s;
+            background: var(--spider-red); color: white; border: 4px solid white;
+            padding: 30px 60px; font-family: 'Bangers'; font-size: 3.5rem; cursor: pointer;
+            box-shadow: 10px 10px 0 var(--spider-blue); transition: 0.2s;
         }
-        #jump-button:hover { transform: scale(1.1) rotate(-3deg); background: var(--glitch-cyan); color: black; }
-        .preloader-hidden { transform: translateY(-100%) skewY(10deg); opacity: 0; visibility: hidden; }
+        #jump-button:hover { transform: scale(1.1) rotate(-3deg); background: var(--glitch-cyan); color: #000; }
 
-        /* --- COMIC PANELS --- */
-        .container { max-width: 1100px; margin: 0 auto; padding: 120px 20px; position: relative; z-index: 10; }
-
+        /* --- PANELS --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 120px 20px; position: relative; z-index: 10; }
         .comic-panel {
-            background: #fff; color: #000;
-            border: 6px solid #000;
-            padding: 40px; margin-bottom: 120px;
-            position: relative;
-            transform-style: preserve-3d;
-            box-shadow: 20px 20px 0px var(--accent-glow);
-            transition: 0.3s cubic-bezier(0.17, 0.88, 0.32, 1.28);
+            background: #fff; color: #000; border: 6px solid #000; padding: 40px; margin-bottom: 120px;
+            position: relative; transform-style: preserve-3d; box-shadow: 20px 20px 0px var(--spider-red);
         }
-
-        h1 { font-family: 'Bangers'; font-size: 5rem; color: #000; margin: 0; line-height: 0.9; text-transform: uppercase; }
         
-        /* TEXT GLITCH EFFECT CLASS */
-        .glitch-trigger { cursor: help; display: inline-block; }
-
+        h1 { font-family: 'Bangers'; font-size: 4.8rem; color: #000; margin: 0; line-height: 0.9; }
         h2.module-title {
-            background: #000; color: var(--comic-yellow);
-            font-family: 'Bangers'; font-size: 3rem;
-            display: inline-block; padding: 5px 30px;
-            margin-top: -80px; transform: skew(-15deg);
-            border: 4px solid #000;
-            position: relative; z-index: 20;
+            background: #000; color: var(--comic-yellow); font-family: 'Bangers'; font-size: 2.8rem;
+            display: inline-block; padding: 5px 30px; margin-top: -85px; transform: skew(-15deg);
+            border: 4px solid #000; position: relative; z-index: 20;
         }
 
-        .role-tag { font-family: 'Oswald'; font-size: 1.8rem; color: var(--spider-red); text-transform: uppercase; display: block; margin-top: 10px;}
+        .role-tag { font-family: 'Oswald'; font-size: 1.8rem; color: var(--spider-red); text-transform: uppercase; display: block; margin-top: 10px; line-height: 1;}
         .date-badge { background: var(--spider-blue); color: white; padding: 2px 10px; font-size: 0.9rem; font-weight: bold; }
-
-        ul { list-style: none; padding: 0; margin-top: 20px; }
+        
+        ul { list-style: none; padding: 0; margin-top: 15px; }
         li::before { content: "⚡ "; color: var(--spider-red); font-weight: bold; }
-        li { margin-bottom: 15px; font-size: 1.2rem; border-bottom: 1px dashed #ddd; padding-bottom: 5px; }
+        li { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
 
-        .pub-box { border: 3px solid #000; padding: 15px; margin: 12px 0; background: #f9f9f9; transition: 0.2s; }
-        .pub-box:hover { background: var(--comic-yellow); transform: translateX(15px); }
+        .pub-box { border: 3px solid #000; padding: 15px; margin: 12px 0; background: #f9f9f9; transition: 0.2s; font-size: 0.95rem; line-height: 1.4; }
 
-        /* --- ONOMATOPOEIA POPUP --- */
+        /* --- HOVER EFFECTS --- */
+        .mission-li:hover { animation: vibrate 0.2s infinite; color: var(--spider-blue); cursor: help; }
+        @keyframes vibrate { 0% { transform: translate(0); } 25% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+
+        .origin-card:hover { transform: scale(1.03); background: #fffde7; border-color: var(--spider-red); }
+        .pub-box:hover { transform: translateX(25px); background: var(--comic-yellow); box-shadow: -15px 0 0 var(--glitch-magenta); }
+        .arsenal-item:hover { text-shadow: 2px 2px var(--glitch-cyan), -2px -2px var(--glitch-magenta); background: #000; color: #fff; padding: 3px; }
+
         .onomatopoeia {
-            position: fixed; font-family: 'Bangers'; font-size: 5rem;
-            color: var(--comic-yellow); text-shadow: 5px 5px 0 #000;
-            pointer-events: none; z-index: 99999;
+            position: fixed; font-family: 'Bangers'; font-size: 4rem; color: var(--comic-yellow);
+            text-shadow: 4px 4px 0 #000; pointer-events: none; z-index: 99999;
             animation: comic-pop 0.4s ease-out forwards;
         }
+        @keyframes comic-pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }
 
-        @keyframes comic-pop {
-            0% { transform: scale(0) rotate(-30deg); opacity: 0; }
-            50% { transform: scale(1.3) rotate(15deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); opacity: 0; }
-        }
-
-        /* --- JUKEBOX UI --- */
-        #multiverse-player {
-            position: fixed; top: 100px; right: 20px; width: 240px;
-            background: #000; color: #fff; border: 4px solid var(--glitch-cyan);
-            padding: 15px; z-index: 9999999; font-family: 'Oswald';
-            box-shadow: 10px 10px 0px var(--glitch-magenta);
-            user-select: none;
-            pointer-events: all;
-        }
-        
-        #player-header {
-            cursor: move;
-            border-bottom: 2px solid var(--glitch-cyan);
-            margin-bottom: 10px;
-            font-family: 'Bangers';
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 5px;
-            color: var(--glitch-cyan);
-            letter-spacing: 1px;
-        }
-
-        .btn-comic { 
-            background: #fff; border: 2px solid #000; 
-            font-family: 'Bangers'; padding: 8px 12px; 
-            cursor: pointer; font-size: 1.1rem;
-            transition: 0.1s;
-        }
-        .btn-comic:hover { background: var(--comic-yellow); }
-
-        #vol-slider {
-            width: 100%;
-            accent-color: var(--glitch-magenta);
-            cursor: pointer;
-            margin-top: 10px;
-            height: 4px;
-        }
-
-        #track-name {
-            font-size: 0.75rem;
-            margin-bottom: 12px;
-            color: var(--comic-yellow);
-            background: rgba(255,255,255,0.05);
-            padding: 5px;
-            border-left: 3px solid var(--glitch-magenta);
-        }
+        /* --- GLITCH SYSTEM --- */
+        .tearing { animation: tear 0.1s infinite; opacity: 1 !important; background: var(--glitch-cyan) !important; }
+        @keyframes tear { 0% { clip-path: inset(10% 0 60% 0); } 50% { clip-path: inset(40% 0 10% 0); } 100% { clip-path: inset(0 0 0 0); } }
     </style>
 </head>
 <body>
 
+    <div id="dimension-hud">DIMENSION: <span id="dim-count">001</span></div>
+
+    <svg class="cobweb web-top-left" viewBox="0 0 100 100"><path d="M0,0 L100,0 M0,0 L0,100 M0,0 L70,70 M20,0 Q20,20 0,20 M40,0 Q40,40 0,40 M60,0 Q60,60 0,60" fill="none" stroke="white" stroke-width="0.5"/></svg>
+    <svg class="cobweb web-bottom-right" viewBox="0 0 100 100"><path d="M0,0 L100,0 M0,0 L0,100 M0,0 L70,70 M20,0 Q20,20 0,20 M40,0 Q40,40 0,40 M60,0 Q60,60 0,60" fill="none" stroke="white" stroke-width="0.5"/></svg>
+
     <div id="halftone-bg"></div>
-    <div id="glitch-overlay"></div>
+    <div id="master-glitch"><h1>DIMENSION_SYNC_ERROR</h1></div>
 
     <div id="intro-container">
-        <h1 style="color:white; font-size: 6rem; margin-bottom: 10px;">BHARAT-VERSE</h1>
-        <p style="color: var(--glitch-cyan); font-family: 'Bangers'; letter-spacing: 4px; margin-bottom: 40px;">STABILIZING REALITY 616...</p>
-        <button id="jump-button" onclick="initMultiverse()">INITIATE JUMP</button>
+        <h1 style="color:white; font-size: 7rem;">BHARAT-VERSE</h1>
+        <p style="color: var(--glitch-cyan); font-family: 'Bangers'; letter-spacing: 5px; margin-bottom: 40px;">// RECURSIVE LOOP INITIATED</p>
+        <button id="jump-button" onclick="startExperience()">INITIATE JUMP</button>
     </div>
 
     <div class="container">
@@ -180,219 +132,198 @@
             <h1 class="glitch-trigger">BHARAT SINGH RAWAT, Ph.D.</h1>
             <h3 class="role-tag">// ION SOURCE & BEAM DIAGNOSTICS EXPERT</h3>
             <p style="font-size: 1.4rem; font-weight: bold; border-top: 5px solid #000; padding-top: 15px; margin-top: 15px;">
-                Manipulating charged particle beams with 7+ years experience. Expert in the design of ion sources, transport systems, and digital twin modeling.
+                Expert in manipulating charged particle beams with 7+ years of experience in the design of ion sources, beam extraction/transport systems, and digital twins.
             </p>
-            <div style="margin-top: 30px;">
-                <a href="https://bharat26031992.github.io/AEgIS_Outreach_Game/" target="_blank" style="background:var(--spider-red); color:white; padding:15px 25px; text-decoration:none; font-family:'Bangers'; font-size:1.8rem; border: 3px solid #000; box-shadow: 5px 5px 0 #000; display: inline-block;">MISSION: PROJECT_DT</a>
-                <a href="https://bharat26031992.github.io/Project-Hbar/" target="_blank" style="background:var(--spider-blue); color:white; padding:15px 25px; text-decoration:none; font-family:'Bangers'; font-size:1.8rem; border: 3px solid #000; box-shadow: 5px 5px 0 #000; margin-left:15px; display: inline-block;">MISSION: PROJECT_HBAR</a>
+            <div style="margin-top: 25px;">
+                <a href="https://bharat26031992.github.io/AEgIS_Outreach_Game/" target="_blank" style="background:var(--spider-red); color:#fff; padding:15px; text-decoration:none; font-family:'Bangers'; border:4px solid #000; box-shadow: 5px 5px 0 #000;">PROJECT_DT</a>
+                <a href="https://bharat26031992.github.io/Project-Hbar/" target="_blank" style="background:var(--spider-blue); color:#fff; padding:15px; text-decoration:none; font-family:'Bangers'; border:4px solid #000; box-shadow: 5px 5px 0 #000; margin-left:15px;">PROJECT_HBAR</a>
             </div>
         </section>
 
-        <h2 class="module-title glitch-trigger">VOL 01: MISSIONS</h2>
+        <h2 class="module-title glitch-trigger">[ 01: EMPLOYMENT HISTORY ]</h2>
         <section class="comic-panel">
             <span class="role-tag">Research Associate | University of Liverpool / Cockcroft / CERN</span>
             <span class="date-badge">2023 — 2026</span>
             <ul>
-                <li>Led ballistic antiproton transport optimization utilizing 3D CST Penning Trap models.</li>
-                <li>Creating a Digital Twin of the Penning Malmberg trap apparatus, integrating first principles physics with Machine Learning (ML) models to predict trap behavior.</li>
-                <li>Executing critical on-shift responsibilities during beam time, including real-time data acquisition and management of cryogenic systems for superconducting magnets.</li>
+                <li class="mission-li">Led ballistic antiproton transport optimization utilizing 3D CST Penning Trap models.</li>
+                <li class="mission-li">Creating a Digital Twin of the Penning Malmberg trap apparatus, integrating first principles physics with Machine Learning (ML) models to predict trap behavior and optimize confinement.</li>
+                <li class="mission-li">Executing critical on-shift responsibilities during beam time, including real-time data acquisition and management of cryogenic systems for superconducting magnets.</li>
             </ul>
 
             <span class="role-tag">Radiation Protection Engineer | Nuvia India Pvt Limited</span>
             <span class="date-badge">2018 — 2018</span>
             <ul>
-                <li>Managed occupational radiation exposure at Kakrapar Atomic Power Station.</li>
-                <li>Developed automated dose tracking systems for proactive safety interventions.</li>
-                <li>Coordinated with the Health Physics and Reactor Management teams for real-time notifications.</li>
+                <li class="mission-li">Managed occupational radiation exposure at Kakrapar Atomic Power Station.</li>
+                <li class="mission-li">Developed automated dose tracking systems for proactive safety interventions.</li>
+                <li class="mission-li">Coordinated with Health Physics and Reactor Management teams for real-time notification of dose status.</li>
             </ul>
         </section>
 
-        <h2 class="module-title glitch-trigger">VOL 02: ORIGINS</h2>
+        <h2 class="module-title glitch-trigger">[ 02: RESEARCH & EDUCATION ]</h2>
         <section class="comic-panel">
-            <span class="role-tag">Ph.D. | Homi Bhabha National Institute / IPR</span>
-            <span class="date-badge">2018 — 2024</span>
-            <ul>
-                <li>Designed a ring cusp ion source for \(\text{Ar}^+\) beams (\(1\text{ to } 2\text{ keV}\), \(100\text{ mA}\)).</li>
-                <li>Utilized CST Studio for magnetic cusp optimization and OPERA-3D for ion optics design.</li>
-                <li>Conducted transient thermo-structural analysis in ANSYS to design a grid mounting system.</li>
-                <li>Engineered a nine-channel Parallel Wire Array (PWA) and a Faraday Cup array (FCA).</li>
-            </ul>
+            <div class="origin-card" style="padding:20px; border: 2px solid #ddd; margin-bottom: 20px;">
+                <span class="role-tag">Ph.D. | Homi Bhabha National Institute / IPR</span>
+                <span class="date-badge">2018 — 2024</span>
+                <ul>
+                    <li>Designed a ring cusp ion source for \(Ar^+\) beams (1-2 keV, 100 mA).</li>
+                    <li>Utilized CST Studio for magnetic cusp optimization and OPERA-3D for ion optics design.</li>
+                    <li>Conducted transient thermo-structural analysis in ANSYS to design a grid mounting system.</li>
+                    <li>Engineered a nine-channel Parallel Wire Array (PWA) and a Faraday Cup array (FCA).</li>
+                </ul>
+            </div>
+            
+            <div class="origin-card" style="padding:20px; border: 2px solid #ddd; margin-bottom: 20px;">
+                <span class="role-tag">M.Tech. Nuclear Engineering | Pandit Deendayal Petroleum University</span>
+                <span class="date-badge">2015 — 2017</span>
+                <ul>
+                    <li>Developed a 10 kW Faraday cup capable of measuring 20-30 mA beam intensities.</li>
+                    <li>Designed cooling systems maintaining copper Faraday Cup at 350.6°C.</li>
+                    <li>Calculated suppression voltages (-450V to -500V) via SIMION 8.0 and LORENTZ.</li>
+                </ul>
+            </div>
 
-            <span class="role-tag">M.Tech. Nuclear Engineering | Pandit Deendayal Petroleum University</span>
-            <span class="date-badge">2015 — 2017</span>
-            <ul>
-                <li>Developed a \(10\text{ kW}\) Faraday cup capable of measuring \(20\text{ to } 30\text{ mA}\) beam intensities.</li>
-                <li>Designed cooling systems maintaining copper Faraday Cup at \(350.6^\circ\text{C}\).</li>
-                <li>Calculated suppression voltages (\(-450\text{ V to } -500\text{ V}\)) via SIMION 8.0 and LORENTZ.</li>
-            </ul>
-
-            <span class="role-tag">B.E. Mechanical Engineering | GTU</span>
-            <ul>
-                <li>Provided provisions for thermal judder and overheating in Long Chain Beamer machine.</li>
-                <li>Mitigated alignment errors in ice cream packaging machines.</li>
-            </ul>
+            <div class="origin-card" style="padding:20px; border: 2px solid #ddd;">
+                <span class="role-tag">B.E. Mechanical Engineering | Gujarat Technological University</span>
+                <span class="date-badge">2009 — 2013</span>
+                <ul>
+                    <li>Provided provisions for thermal judder and overheating in Long Chain Beamer machine.</li>
+                    <li>Mitigated alignment errors in high-speed ice cream packaging machines.</li>
+                </ul>
+            </div>
         </section>
 
-        <h2 class="module-title glitch-trigger">VOL 03: ARCHIVES</h2>
+        <h2 class="module-title glitch-trigger">[ 03: PUBLICATIONS ]</h2>
         <section class="comic-panel">
             <div class="pub-box"><b>Instruments (2026):</b> Characterization of supersonic gas curtain monitor for flash proton therapy.</div>
             <div class="pub-box"><b>IBIC (2025):</b> Design of Retarding Potential Energy Analyser (RPEA) for low energy antimatter.</div>
             <div class="pub-box"><b>Instruments (2025):</b> Faraday cups: principles, designs, and applications—a review.</div>
             <div class="pub-box"><b>EXA-LEAP (2025):</b> 3D simulation studies of mixed plasma confinement at AEgIS.</div>
-            <div class="pub-box"><b>Phys. Rev. Lett. (2024):</b> Positronium Laser Cooling via \(1^3\text{S-}2^3\text{P}\) Transition.</div>
-            <div class="pub-box"><b>Ph.D. Dissertation (2024):</b> Extraction of an Ion beam and its Transport.</div>
+            <div class="pub-box"><b>Phys. Rev. Lett. (2024):</b> Positronium Laser Cooling via \(1^3S-2^3P\) Transition.</div>
+            <div class="pub-box"><b>HBNI Ph.D. Dissertation (2024):</b> Extraction of an Ion beam and its Transport from a Multi-Cusp Gridded Ion Source.</div>
             <div class="pub-box"><b>IPAC (2024):</b> Simulation studies for the confinement of antiprotons for AEgIS experiment.</div>
-            <div class="pub-box"><b>IEEE TPS (2023):</b> Roles of Space Charge Neutralization in Ring Cusp Ion Sources.</div>
-            <div class="pub-box"><b>AIP Advances (2022):</b> Measurement system for ion beam profiles using PWA and FCA.</div>
-            <div class="pub-box"><b>IEEE TPS (2021):</b> Characterization of a Multicusp Ion Source with Two-Grid Extraction System.</div>
-            <div class="pub-box"><b>ICONE25 (2017):</b> Design and simulation of \(10\text{ kW}\) Faraday cup for ion beam current.</div>
+            <div class="pub-box"><b>IEEE TPS (2023):</b> Space Charge Neutralization in Ring Cusp Ion Sources.</div>
+            <div class="pub-box"><b>AIP Advances (2022):</b> Ion beam profiles using fixed parallel wires and Faraday cup array.</div>
+            <div class="pub-box"><b>IEEE TPS (2021):</b> Multicusp Ion Source with Two-Grid Extraction System.</div>
+            <div class="pub-box"><b>ICONE25 (2017):</b> Design and simulation of 10kW Faraday cup for ion beam current.</div>
         </section>
 
-        <h2 class="module-title glitch-trigger">VOL 04: ARSENAL</h2>
+        <h2 class="module-title glitch-trigger">[ 04: PRESENTATION & TALKS ]</h2>
         <section class="comic-panel">
-            <p><b>SOFTWARE STACK:</b> CST Studio, OPERA3D, SIMION, COMSOL, RF Track, ANSYS, ASTRA, MAD-X, Geant4, IBISIMU.</p>
-            <p><b>EXPERTISE:</b> Ion Source Design, Beam Transport Optimization, Space Charge Neutralization, Advanced Diagnostics.</p>
-            <div style="display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
-                <span class="date-badge">♟ CHESS: 1900 ELO</span>
-                <span class="date-badge">🌍 LANGUAGES: 5 (English, Hindi, Gujarati, Spanish B2, Russian A1)</span>
-                <span class="date-badge">🎵 MUSIC: Keytar, Guitar, Harmonium</span>
-                <span class="date-badge">✈️ TRAVEL: 12+ Countries</span>
-            </div>
+            <div class="pub-box"><b>Invited talk:</b> FC design for antimatter research using CST - Nottingham, UK (2025).</div>
+            <div class="pub-box"><b>Contributed talk:</b> Digital Twin-Enabled Antimatter Beam Control - Lisbon, Portugal (2025).</div>
+            <div class="pub-box"><b>Contributed talk:</b> Modeling Penning-Malmberg Traps for AEgIS - Manchester, UK (2025).</div>
+            <div class="pub-box"><b>Contributed talk:</b> Design and Simulation of 10 kW Faraday Cup - Shanghai, China (2017).</div>
+        </section>
+
+        <h2 class="module-title glitch-trigger">[ 05: HOBBIES ]</h2>
+        <section class="comic-panel" style="display:flex; flex-wrap:wrap; gap:12px;">
+            <span class="date-badge arsenal-item">♟ CHESS: 1900 on chess.com / 1725 ELO</span>
+            <span class="date-badge arsenal-item">🌍 LANGUAGES: 5 (English, Hindi, Gujarati, Spanish B2, Russian A1)</span>
+            <span class="date-badge arsenal-item">🎵 INSTRUMENTS: Keytar, Harmonium, Melodica, Guitar</span>
+            <span class="date-badge arsenal-item">✈️ TRAVEL: 12+ Countries</span>
+        </section>
+
+        <h2 class="module-title glitch-trigger">[ 06: ARSENAL ]</h2>
+        <section class="comic-panel">
+            <p><b>SOFTWARE STACK:</b> 
+                <span class="arsenal-item">CST Studio</span>, <span class="arsenal-item">OPERA3D</span>, <span class="arsenal-item">SIMION</span>, <span class="arsenal-item">COMSOL</span>, <span class="arsenal-item">RF Track</span>, <span class="arsenal-item">ANSYS</span>, <span class="arsenal-item">ASTRA</span>, <span class="arsenal-item">MAD-X</span>, <span class="arsenal-item">Geant4</span>, <span class="arsenal-item">IBISIMU</span>.
+            </p>
         </section>
     </div>
 
-    <div id="multiverse-player" style="display:none;">
-        <div id="player-header">
-            <span>MULTIVERSE_RADIO</span><span>☊</span>
-        </div>
-        <div id="track-name">SCANNING_SIGNAL...</div>
-        <div style="display: flex; gap: 5px; justify-content: space-between;">
-            <button class="btn-comic" id="prev-btn">PREV</button>
-            <button class="btn-comic" id="play-btn" style="flex:1">PLAY</button>
-            <button class="btn-comic" id="next-btn">NEXT</button>
-            <button class="btn-comic" id="mute-btn">🔊</button>
-        </div>
-        <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
-    </div>
+    <audio id="ambient-melody" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"></audio>
 
     <script>
-        // --- 1. DRAGGING SYSTEM ---
-        const player = document.getElementById('multiverse-player');
-        const header = document.getElementById('player-header');
-        let isDragging = false, offset = { x: 0, y: 0 };
-
-        header.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offset.x = e.clientX - player.offsetLeft;
-            offset.y = e.clientY - player.offsetTop;
-            player.style.transition = 'none';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            player.style.left = (e.clientX - offset.x) + 'px';
-            player.style.top = (e.clientY - offset.y) + 'px';
-            player.style.right = 'auto';
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        // --- 2. LANGUAGE GLITCH EFFECT (RESTORED) ---
-        const glyphs = "अआइईउऊऋएऐओऔकखगघङचछজঝञটঠডঢণতথদধনপফবভമയരലവശഷസഹABCDEÑ012345678";
-        document.querySelectorAll('.glitch-trigger').forEach(el => {
-            const originalText = el.innerText;
-            el.addEventListener('mouseenter', () => {
-                let iterations = 0;
-                const interval = setInterval(() => {
-                    el.innerText = originalText.split("").map((char, index) => {
-                        if(index < iterations) return originalText[index];
-                        return glyphs[Math.floor(Math.random() * glyphs.length)];
-                    }).join("");
-                    if(iterations >= originalText.length) clearInterval(interval);
-                    iterations += 1/3;
-                }, 30);
-            });
-        });
-
-        // --- 3. REALITY SHIFT SYSTEM ---
-        const dimensions = [
-            { bg: '#050505', accent: '#ff0037' },
-            { bg: '#2e3192', accent: '#00ffff' },
-            { bg: '#ff00ff', accent: '#fff200' },
-            { bg: '#000000', accent: '#ff00ff' },
-            { bg: '#fff200', accent: '#ff0037' }
-        ];
-
-        window.addEventListener('scroll', () => {
-            const scrollPercent = window.scrollY / (document.body.offsetHeight - window.innerHeight);
-            const dimIndex = Math.min(dimensions.length - 1, Math.floor(scrollPercent * dimensions.length));
-            const currentDim = dimensions[dimIndex];
-            
-            if (document.body.dataset.dim !== dimIndex.toString()) {
-                document.body.dataset.dim = dimIndex;
-                const overlay = document.getElementById('glitch-overlay');
-                overlay.style.opacity = '0.8';
-                setTimeout(() => {
-                    document.body.style.backgroundColor = currentDim.bg;
-                    document.documentElement.style.setProperty('--accent-glow', currentDim.accent);
-                    overlay.style.opacity = '0';
-                }, 100);
-            }
-        });
-
-        // --- 4. COMIC POPUPS ---
-        const words = ["THWIP!", "ZAP!", "POW!", "BOOM!", "GLITCH!", "616!"];
-        window.addEventListener('mousedown', (e) => {
-            if (e.target.closest('#multiverse-player')) return;
-            const text = words[Math.floor(Math.random() * words.length)];
-            const el = document.createElement('div');
-            el.className = 'onomatopoeia';
-            el.innerText = text;
-            el.style.left = e.clientX + 'px'; el.style.top = e.clientY + 'px';
-            el.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*40}deg)`;
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 400);
-        });
-
-        // --- 5. AUDIO ENGINE ---
-        const audio = new Audio();
-        const playlist = ["track1.mp3", "track2.mp3", "track3.mp3", "track4.mp3"];
-        let cur = 0;
-
-        function initMultiverse() {
-            document.getElementById('intro-container').classList.add('preloader-hidden');
-            player.style.display = 'block';
-            loadTrack(0);
-        }
-
-        function loadTrack(idx) {
-            audio.src = playlist[idx];
-            document.getElementById('track-name').innerText = `DIM_SIGNAL_${idx+1}_LOCKED`;
-        }
-
-        document.getElementById('play-btn').onclick = () => {
-            if(audio.paused) { audio.play(); document.getElementById('play-btn').innerText = "PAUSE"; }
-            else { audio.pause(); document.getElementById('play-btn').innerText = "PLAY"; }
+        const melody = document.getElementById('ambient-melody');
+        const sfx = {
+            jump: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
+            hover: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+            blip: new Audio('https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3'),
+            boom: new Audio('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3')
         };
 
-        document.getElementById('next-btn').onclick = () => { cur = (cur + 1) % playlist.length; loadTrack(cur); audio.play(); };
-        document.getElementById('prev-btn').onclick = () => { cur = (cur - 1 + playlist.length) % playlist.length; loadTrack(cur); audio.play(); };
+        sfx.blip.volume = 0.15;
+        sfx.hover.volume = 0.1;
 
-        const muteBtn = document.getElementById('mute-btn');
-        const volSlider = document.getElementById('vol-slider');
-        volSlider.oninput = (e) => { audio.volume = e.target.value; audio.muted = false; muteBtn.innerText = "🔊"; };
-        muteBtn.onclick = () => { audio.muted = !audio.muted; muteBtn.innerText = audio.muted ? "🔇" : "🔊"; };
+        const dimensionColors = ['#050505', '#1a0505', '#051a05', '#05051a', '#1a1a05', '#1a001a'];
+        let dimensionCount = 1;
 
-        // --- 6. PARALLAX ---
-        window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.clientX) / 50;
-            const y = (window.innerHeight / 2 - e.clientY) / 50;
-            document.querySelectorAll('.comic-panel').forEach(panel => {
-                panel.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-            });
+        function startExperience() {
+            sfx.jump.play();
+            melody.volume = 0.2;
+            melody.play().catch(e => {});
+            document.getElementById('intro-container').style.transform = "translateY(-100%)";
+            document.getElementById('dimension-hud').style.display = "block";
+        }
+
+        // --- GLITCH HOVER ---
+        const glyphs = "अआइईউऊऋएऐওঔकখगघङЯФЖБД012345678";
+        document.querySelectorAll('.glitch-trigger').forEach(el => {
+            const original = el.innerText;
+            el.onmouseenter = () => {
+                sfx.hover.currentTime = 0; sfx.hover.play();
+                let iter = 0;
+                const inv = setInterval(() => {
+                    el.innerText = original.split("").map((c, i) => {
+                        if(i < iter) return original[i];
+                        return glyphs[Math.floor(Math.random()*glyphs.length)];
+                    }).join("");
+                    if(iter >= original.length) clearInterval(inv);
+                    iter += 1/2;
+                }, 30);
+            };
+            el.onmouseleave = () => { el.innerText = original; };
         });
+
+        // --- SUBTLE CLICK ---
+        window.onmousedown = (e) => {
+            sfx.blip.currentTime = 0; sfx.blip.play();
+            const div = document.createElement('div');
+            div.className = 'onomatopoeia'; 
+            div.innerText = "PING";
+            div.style.left = e.clientX + 'px'; div.style.top = e.clientY + 'px';
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 400);
+        };
+
+        // --- RECURSIVE RESET WITH COBWEB FLICKER ---
+        window.onscroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
+                const glitch = document.getElementById('master-glitch');
+                glitch.classList.add('tearing');
+                
+                // Audio Speedup
+                melody.playbackRate = 2.5; 
+                sfx.boom.play();
+
+                // Web Flicker
+                document.querySelectorAll('.cobweb').forEach(web => web.classList.add('web-flicker'));
+                
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    glitch.classList.remove('tearing');
+                    melody.playbackRate = 1.0; 
+                    
+                    dimensionCount++;
+                    document.getElementById('dim-count').innerText = dimensionCount.toString().padStart(3, '0');
+                    document.body.style.setProperty('--dim-bg', dimensionColors[dimensionCount % dimensionColors.length]);
+                    
+                    // Remove flicker class after reset
+                    setTimeout(() => {
+                        document.querySelectorAll('.cobweb').forEach(web => web.classList.remove('web-flicker'));
+                    }, 500);
+                }, 700);
+            }
+        };
+
+        // --- PARALLAX ---
+        window.onmousemove = (e) => {
+            const x = (window.innerWidth/2 - e.clientX)/85;
+            const y = (window.innerHeight/2 - e.clientY)/85;
+            document.querySelectorAll('.comic-panel').forEach(p => {
+                p.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+            });
+        };
     </script>
 </body>
 </html>
