@@ -21,10 +21,15 @@ python -m http.server 8000
 # then open http://localhost:8000 in your browser
 ```
 
+
 ## Notes
 
 - This template is intentionally small and dependency-free.
 - Inspect `jukebox.js` and `parallax.js` to adapt behavior or styling.
+
+## Author
+
+Original idea and theme by Dr. Bharat Singh Rawat — University of Liverpool.
 
 ## Contributing
 
@@ -32,4 +37,5 @@ Feel free to open issues or submit pull requests to improve the template.
 
 ## License
 
-MIT
+This project is released under the MIT License — see the `LICENSE` file for
+the full text.
