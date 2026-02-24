@@ -1,6 +1,6 @@
 # Comic Theme CV Template
 
-A minimal interactive CV / portfolio template with a comic-style theme. It includes a simple HTML entry point and two JavaScript features: a jukebox for audio and a parallax effect for scrolling.
+A minimal interactive CV / portfolio template with a comic-style theme based on Spiderman: Into the Multiverse. It includes a simple HTML entry point and two JavaScript features: a jukebox for audio and a parallax effect for scrolling.
 
 ## Files
 
