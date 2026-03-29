@@ -1,5 +1,7 @@
 # Comic Theme CV Template
 
+<img width="1902" height="818" alt="image" src="https://github.com/user-attachments/assets/99413da2-2aed-42ca-b59c-86504ca48867" />
+
 A minimal interactive CV / portfolio template with a comic-style theme based on Spiderman: Into the Multiverse. It includes a simple HTML entry point and two JavaScript features: a jukebox for audio and a parallax effect for scrolling.
 
 ## Files
